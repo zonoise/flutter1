@@ -94,22 +94,92 @@ class _MyHomePageState extends State<MyHomePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
+
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            TextFormField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your username',
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            const SizedBox(
+              height: 500,
+              child: NumberKeyWidget(),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 70,
+                child: ElevatedButton(
+                    onPressed: (){},
+                    style: ElevatedButton.styleFrom(
+                      textStyle: Theme.of(context).textTheme.headlineMedium,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text("Enter")),
+              ),
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class NumberKeyWidget extends StatelessWidget {
+  const NumberKeyWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      primary: false,
+      padding: const EdgeInsets.all(10),
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      crossAxisCount: 3,
+      children: const <Widget>[
+        NumberButtonWidget(number: 7),
+        NumberButtonWidget(number: 8),
+        NumberButtonWidget(number: 9),
+        NumberButtonWidget(number: 4),
+        NumberButtonWidget(number: 5),
+        NumberButtonWidget(number: 6),
+        NumberButtonWidget(number: 1),
+        NumberButtonWidget(number: 2),
+        NumberButtonWidget(number: 3),
+      ],
+    );
+  }
+
+  Widget buildButtonContainer(String text) {
+    return const NumberButtonWidget(
+      number: 1,
+    );
+  }
+}
+
+class NumberButtonWidget extends StatelessWidget {
+  const NumberButtonWidget({Key? key, required this.number}) : super(key: key);
+
+  final int number;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 4,
+          textStyle: Theme.of(context).textTheme.headlineMedium,
+        ),
+        child: Text(number.toString()));
   }
 }
