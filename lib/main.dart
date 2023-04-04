@@ -5,7 +5,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -49,6 +49,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  int _number = 0;
+
+  void _addNumber(int num) {
+    setState(() {
+      _number = _number * 10 + num;
+    });
+  }
+
+  void _clearNumber() {
+    setState(() {
+      _number = 0;
+    });
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -97,14 +110,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
           children: <Widget>[
             TextFormField(
+              controller: TextEditingController(text: _number.toString()),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Enter your username',
+                // labelText: 'Enter your username',
               ),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            const SizedBox(
-              height: 500,
-              child: NumberKeyWidget(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: double.infinity,
+                  height: 70,
+                  child: ClearButtonWidget(onPressed: _clearNumber)),
+            ),
+            SizedBox(
+              height: 450,
+              child: NumberKeyWidget(
+                onPressed: _addNumber,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -112,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: double.infinity,
                 height: 70,
                 child: ElevatedButton(
-                    onPressed: (){},
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       textStyle: Theme.of(context).textTheme.headlineMedium,
                       shape: RoundedRectangleBorder(
@@ -131,9 +155,12 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class NumberKeyWidget extends StatelessWidget {
+  final void Function(int) onPressed;
+
   const NumberKeyWidget({
-    super.key,
-  });
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -142,37 +169,39 @@ class NumberKeyWidget extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
+      childAspectRatio: 1.5, // width/height
       crossAxisCount: 3,
-      children: const <Widget>[
-        NumberButtonWidget(number: 7),
-        NumberButtonWidget(number: 8),
-        NumberButtonWidget(number: 9),
-        NumberButtonWidget(number: 4),
-        NumberButtonWidget(number: 5),
-        NumberButtonWidget(number: 6),
-        NumberButtonWidget(number: 1),
-        NumberButtonWidget(number: 2),
-        NumberButtonWidget(number: 3),
+      children: <Widget>[
+        NumberButtonWidget(onPressed: onPressed, number: 7),
+        NumberButtonWidget(onPressed: onPressed, number: 8),
+        NumberButtonWidget(onPressed: onPressed, number: 9),
+        NumberButtonWidget(onPressed: onPressed, number: 4),
+        NumberButtonWidget(onPressed: onPressed, number: 5),
+        NumberButtonWidget(onPressed: onPressed, number: 6),
+        NumberButtonWidget(onPressed: onPressed, number: 1),
+        NumberButtonWidget(onPressed: onPressed, number: 2),
+        NumberButtonWidget(onPressed: onPressed, number: 3),
+        NumberButtonWidget(onPressed: onPressed, number: 0),
       ],
-    );
-  }
-
-  Widget buildButtonContainer(String text) {
-    return const NumberButtonWidget(
-      number: 1,
     );
   }
 }
 
 class NumberButtonWidget extends StatelessWidget {
-  const NumberButtonWidget({Key? key, required this.number}) : super(key: key);
+  const NumberButtonWidget(
+      {Key? key, required this.number, required this.onPressed})
+      : super(key: key);
+
+  final void Function(int) onPressed;
 
   final int number;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          onPressed(number);
+        },
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -181,5 +210,27 @@ class NumberButtonWidget extends StatelessWidget {
           textStyle: Theme.of(context).textTheme.headlineMedium,
         ),
         child: Text(number.toString()));
+  }
+}
+
+class ClearButtonWidget extends StatelessWidget {
+  const ClearButtonWidget({Key? key, required this.onPressed})
+      : super(key: key);
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () {
+          onPressed();
+        },
+        style: ElevatedButton.styleFrom(
+          textStyle: Theme.of(context).textTheme.headlineMedium,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: const Text("C"));
   }
 }
